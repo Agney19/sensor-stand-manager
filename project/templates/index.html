@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+    Sensor stand manager
+</h1>
+<h2 class="subtitle">
+    Reserve a free sensor & start debugging your program
+</h2>
+{% if current_user.is_authenticated %}
+
+<table>
+    <tr>
+        <td>
+            <img src="https://sun9-34.userapi.com/impg/a1_gmGpX7ZR-AJfHicZv_gvGtoVszydFICOosw/LNOalWR03Jw.jpg?size=528x438&quality=95&sign=960b322eab5f52c2a1436614241d1127&type=album"
+                 width="500" height="400" style="border: 2px solid black">
+        </td>
+        <td>
+            <form method="POST" action="/reserve">
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" name="sensor_id" placeholder="Sensor ID" autofocus="">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="datetime-local" name="start_datetime" placeholder="Start"
+                               autofocus="">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="datetime-local" name="end_datetime" placeholder="End"
+                               autofocus="">
+                    </div>
+                </div>
+                <button class="button is-block is-info is-large is-fullwidth">Reserve</button>
+            </form>
+        </td>
+    </tr>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="title">
+	Welcome, {{ name }}!
+</h1>
+<br/>
+
+<table style="width:700px">
+    <tbody>
+        <tr>
+            <td>
+                <form method="POST" action="/reserve/suggestions">
+                    {% if suggestions %}
+                        <select name="sensor-choices" multiple class="form-control" size="13">
+                            {% for sensor in sensors %}
+                                {% if sensor.id in selected_sensors %}
+                                    <option disabled selected value="{{ sensor.id }}">{{ sensor.name }} ({{ sensor.pin }})</option>
+                                {% else %}
+                                    <option disabled value="{{ sensor.id }}">{{ sensor.name }} ({{ sensor.pin }})</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button disabled class="button is-block">Timetable</button>
+                    {% else %}
+                        <select name="sensor-choices" multiple class="form-control" size="13">
+                            {% for sensor in sensors %}
+                                <option value="{{ sensor.id }}">{{ sensor.name }} ({{ sensor.pin }})</option>
+                            {% endfor %}
+                        </select>
+                        <button class="button is-block">Timetable</button>
+                    {% endif %}
+                </form>
+            </td>
+            <td>
+                {% if suggestions %}
+                <table>
+                    <tbody>
+                        {% for suggestion in suggestions %}
+                        <tr>
+                            <td>
+                                <form method="POST" action="/reserve" style="display:inline">
+                                    <input name="selected_sensors" style="display:none" value="{{ selected_sensors }}">
+                                    <input name="start_datetime" readonly value="{{ suggestion[0] }}">
+                                    <input name="end_datetime"   readonly value="{{ suggestion[1] }}">
+                                    <button type="submit">Reserve</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<br/>
+{% if reservations %}
+<h3>My reservations</h3>
+<br/>
+<table>
+   <thead><tr><th>Sensor</th><th>Start</th><th>End</th></tr></thead>
+   <tbody>
+   {% for reservation in reservations %}
+      <tr>
+         <td>{{ reservation[1] }}</td>
+         <td>{{ reservation[0].start_datetime }}</td>
+         <td>{{ reservation[0].end_datetime }}</td>
+         <td>
+            <form method="POST" action="/reserve/{{ reservation[0].id }}">
+               <button class="button is-block">Delete</button>
+            </form>
+         </td>
+      </tr>
+   {% endfor %}
+   </tbody>
+</table>
+{% else %}
+<h3>No active reservations</h3>
+{% endif %}
+{% endblock %}

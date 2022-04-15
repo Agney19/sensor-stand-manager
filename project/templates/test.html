@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if can_operate %}
+<h1>Sensor stand is available</h1>
+{% else %}
+<h1>Sensor stand is not available</h1>
+<h3>No reservations</h3>
+{% endif %}
+<br/>
+
+{% if is_uploaded %}
+<h2>Firmware is running</h2>
+{% else %}
+<h2>No firmware uploaded</h2>
+{% endif %}
+<form action="http://localhost:5000/uploader" method="POST" enctype="multipart/form-data">
+    {% if can_operate %}
+    <input type="file" name="file" class="button"/>
+    <input type="submit" class="button">
+    {% else %}
+    <input disabled type="file" name="file" class="button"/>
+    <input disabled type="submit" class="button">
+    {% endif %}
+</form>
+<br/><br/>
+
+{% if can_operate %}
+<audio controls autoplay id="myaudio">
+    <source src="{{ url_for('audio.audio') }}" type="audio/x-wav;codec=pcm">
+    Your browser does not support the audio element.
+</audio>
+{% endif %}
+
+<table>
+    <tr>
+        <td>
+        {% if can_operate %}
+            <img src="{{ url_for('test.cam') }}" width="500" height="400"
+                 style="border: 2px solid black">
+        </td>
+        <td rowspan="2">
+            <object data="{{ url_for('logs.logs') }}" width="500" height="500"
+                    style="border: 2px solid black background-color:#FFFFFF"></object>
+        </td>
+        <td>
+        {% else %}
+            <img src="https://www.shareicon.net/data/256x256/2016/04/06/745598_camera_512x512.png" width="500" height="400"
+                 style="opacity: 0.5">
+        </td>
+        <td rowspan="2">
+            <object data="" width="500" height="500"
+                    style="border: 2px solid black background-color:#FFFFFF"></object>
+        </td>
+        {% endif %}
+    </tr>
+    <tr>
+        {% if can_operate %}
+        <td>
+            <img src="https://cdn.onlinewebfonts.com/svg/img_41270.png" onclick="changeVolume(1.0)" width="100" height="100">
+            <img src="https://cdn.onlinewebfonts.com/svg/img_548467.png" onclick="changeVolume(0.0)" width="100" height="100">
+            <script>
+                function changeVolume(value) {
+                    let audio = document.getElementById("myaudio");
+                    audio.volume = value
+                }
+            </script>
+        </td>
+        {% else %}
+        <td>
+            <img src="https://cdn.onlinewebfonts.com/svg/img_41270.png" width="100" height="100" style="opacity: 0.5">
+            <img src="https://cdn.onlinewebfonts.com/svg/img_548467.png" width="100" height="100" style="opacity: 0.5">
+        </td>
+        {% endif %}
+    </tr>
+</table>
+{% endblock %}
